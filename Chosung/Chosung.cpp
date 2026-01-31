@@ -168,7 +168,7 @@ std::array<wchar_t, 2> cConvertConsonant::convertJongToCho(const wchar_t wc)
     return arr;
 }
 
-wchar_t cConvertConsonant::ConvertCompatChoToJamo(wchar_t wc)
+wchar_t cConvertConsonant::convertCompatChoToJamo(wchar_t wc)
 {
     auto it = std::as_const(m_mapJamo).find(wc);
 
@@ -202,7 +202,7 @@ std::vector<varCharacter> cCompare::convertSentence(const std::wstring & ws)
     return vecConvert;
 }
 
-bool cCompare::compareSentence(
+bool cCompare::isCompareSentence(
     const std::vector<varCharacter>& vecSearch, 
     const std::vector<varCharacter>& vecWord
 )
@@ -224,11 +224,11 @@ bool cCompare::compareSentence(
 
         if (std::holds_alternative<stHangeul>(vecSearch[iCorrect]))
         {
-            bIsCompare = std::get<stHangeul>(vecSearch[iCorrect]).compare(stWord);
+            bIsCompare = std::get<stHangeul>(vecSearch[iCorrect]).isCompare(stWord);
         }
         else
         {
-            bIsCompare = std::get<stEnglish>(vecSearch[iCorrect]).compare(stWord);
+            bIsCompare = std::get<stEnglish>(vecSearch[iCorrect]).isCompare(stWord);
         }
 
         if (bIsCompare)
@@ -255,7 +255,7 @@ stEnglish::stEnglish(wchar_t wc) : stCharacter()
     m_wc = wc;
 }
 
-bool stEnglish::compare(const varCharacter &  varInput) const
+bool stEnglish::isCompare(const varCharacter &  varInput) const
 {
     if (!std::holds_alternative<stEnglish>(varInput))
         return false;
@@ -284,7 +284,7 @@ stHangeul::stHangeul(wchar_t wc) : stCharacter()
         && wc <= 0x314E
         )
     {
-        const wchar_t wcCho = cConvertConsonant::getInstance().ConvertCompatChoToJamo(wc);
+        const wchar_t wcCho = cConvertConsonant::getInstance().convertCompatChoToJamo(wc);
         m_arrCho = cConvertConsonant::getInstance().convertChoToDoubleConsonant(wcCho);
     }
     else if (wc>= 0x314F 
@@ -295,7 +295,7 @@ stHangeul::stHangeul(wchar_t wc) : stCharacter()
     }
 }
 
-bool stHangeul::compare(const varCharacter& varInput) const
+bool stHangeul::isCompare(const varCharacter& varInput) const
 {
     if (!std::holds_alternative<stHangeul>(varInput))
         return false;
@@ -445,7 +445,7 @@ int main()
     {
         std::vector<varCharacter> vecWord = _cCompare.convertSentence(word);
 
-        if (_cCompare.compareSentence(vecSearch, vecWord))
+        if (_cCompare.isCompareSentence(vecSearch, vecWord))
         {
             std::string strWord = convertWStringToUtf8(word);
             std::cout << strWord << std::endl;

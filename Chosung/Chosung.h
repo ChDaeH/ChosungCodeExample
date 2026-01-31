@@ -40,7 +40,7 @@ public:
     //종성 글자를 단일 자음으로 변환한다
     std::array<wchar_t, 2> convertJongToCho(const wchar_t wc);
     //입력 단일 자음을 단일 자음으로 변환한다
-    wchar_t ConvertCompatChoToJamo(wchar_t wc);
+    wchar_t convertCompatChoToJamo(wchar_t wc);
 
 private:
     // 쌍자음(ㄲ→ㄱㄱ), 종성(ㅄ→ㄹㅅ)을 단일 자음 배열로 반환
@@ -58,7 +58,7 @@ struct stCharacter
     virtual ~stCharacter() = default;
     
     //동일한지 비교한다
-    virtual bool compare(const varCharacter & varInput) const = 0;
+    virtual bool isCompare(const varCharacter & varInput) const = 0;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ struct stEnglish : public stCharacter
 {
 public:
     stEnglish(wchar_t wc);
-    virtual bool compare(const varCharacter &  varInput) const override;
+    virtual bool isCompare(const varCharacter &  varInput) const override;
     wchar_t m_wc = 0;
 };
 
@@ -77,7 +77,7 @@ struct stHangeul : public stCharacter
 {
 public:
     stHangeul(wchar_t wc);
-    virtual bool compare(const varCharacter & varInput) const override;
+    virtual bool isCompare(const varCharacter & varInput) const override;
 
     std::array<wchar_t, 2> m_arrCho = {};   //초성
     wchar_t m_wcJung = 0;                   //중성
@@ -95,7 +95,7 @@ public:
     std::vector<varCharacter> convertSentence(const std::wstring & ws);
 
     //두 varCharacter 문장을 비교한다 
-    bool compareSentence(
+    bool isCompareSentence(
         const std::vector<varCharacter> & vecSearch, 
         const std::vector<varCharacter> & vecSentence
     );
